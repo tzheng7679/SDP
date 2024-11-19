@@ -49,6 +49,10 @@ class Rectangle {
         Rectangle(RectangleData rdata) {
             shape = rdata;
         }
+
+        RectangleData getShape() {
+            return shape;
+        }
 };
 
 
