@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include "classes.cpp"
+#include <vector>
 
 using namespace std;
 
@@ -57,10 +58,10 @@ struct Save{
     };
 
     // writes save file for GameObjects in array #obs, with n elements
-    void writeGameObjects(char* path, GameObject obs[], int n) {
+    void writeGameObjects(char* path, vector<GameObject> obs) {
         ofstream f(path);
         
-        for(int i = 0; i < n; i++) {
+        for(int i = 0; i < obs.size(); i++) {
             // get position and rotation values for object and write to file
             Vector3 pos = obs[i].getPosition();
             f << pos.x TAB 
@@ -70,5 +71,22 @@ struct Save{
         }
 
         f.close();
+    };
+    
+    // writes save file for GameObjects in array #obs, with n elements
+    vector<GameObject> readGameObjects(char* path) {
+        FILE* f = fopen(path, "r");
+        vector<GameObject> obs;
+
+        double x, y, z, rotation;
+        while(fscanf(f, "%f%f%f%f", &x, &y, &z, &rotation) != EOF) {
+            GameObject ob = GameObject({x,y,z});
+            ob.setRotation(rotation);
+            obs.push_back(ob);
+        }
+
+        fclose(f);
+
+        return obs;
     };
 };

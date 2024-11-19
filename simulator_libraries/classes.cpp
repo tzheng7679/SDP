@@ -62,9 +62,6 @@ class Rectangle {
             shape = rdata;
         }
 
-        RectangleData getShape() {
-            return shape;
-        }
         //top left corner (with no rotation) in global coordinates
         Vector2 getTL() {
             return shape.tl;
@@ -110,6 +107,10 @@ class GameObject {
 
         double getRotation() {
             return rotation;
+        }
+
+        void setRotation(double r) {
+            rotation = r;
         }
 };
 
