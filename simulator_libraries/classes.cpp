@@ -1,5 +1,7 @@
 #include <math.h>
 
+#ifndef classes_cpp
+#define classes_cpp
 /* Basic structs to store the data in */
 
 /*
@@ -201,3 +203,5 @@ class Sprites {
         }
 
 };
+
+#endif

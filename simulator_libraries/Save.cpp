@@ -1,4 +1,7 @@
 /* Class of save file utilities for writing and reading saves */
+
+#ifndef Save_cpp
+#define Save_cpp
 #include <stdio.h>
 #include <string>
 #include <fstream>
@@ -90,3 +93,5 @@ struct Save{
         return obs;
     };
 };
+
+#endif
