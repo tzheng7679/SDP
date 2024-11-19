@@ -80,6 +80,9 @@ class GameObject {
             return position;
         }
 
+        double getRotation() {
+            return rotation;
+        }
 };
 
 /*
