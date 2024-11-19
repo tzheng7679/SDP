@@ -13,10 +13,10 @@ using namespace std;
 /* Writes save data for character object to file at #path */
 /* w/ format below
 health
-hitbox.x
-hitbox.x2
-hitbox.y
-hitbox.y2
+hitbox.TL.x
+hitbox.TL.y
+hitbox.BR.x
+hitbox.BR.y
 position.x
 position.y
 position.z
@@ -26,10 +26,10 @@ struct Save{
         ofstream f(path);
 
         f << character.getHealth() NEWLINE
-        f << character.getHitbox().getShape().x NEWLINE
-        f << character.getHitbox().getShape().x2 NEWLINE
-        f << character.getHitbox().getShape().y NEWLINE
-        f << character.getHitbox().getShape().y2 NEWLINE
+        f << character.getHitbox().getTL().x NEWLINE
+        f << character.getHitbox().getTL().y NEWLINE
+        f << character.getHitbox().getBR().x NEWLINE
+        f << character.getHitbox().getBR().y NEWLINE
 
         // write position
         Vector3 pos = character.getPosition();
@@ -45,12 +45,12 @@ struct Save{
     Character readCharacterData(char* path) {
         FILE* save = fopen(path, "r");
 
-        double health, x, x2, y, y2, px, py, pz;
+        double health, TLx, TLy, BRx, BRy, px, py, pz;
 
-        scanf("%f%f%f%f%f%f%f%f", &health, &x, &x2, &y, &y2, &px, &py, &pz);
+        scanf("%f%f%f%f%f%f%f%f", &health, &TLx, &TLy, &BRx, &BRy, &px, &py, &pz);
 
         Vector3 pos = {px, py, pz};
-        Rectangle hitbox({x, x2, y, y2});
+        Rectangle hitbox({TLx, TLy, BRx, TLy, TLx, BRy, BRx, BRy});
 
         fclose(save);
         return Character(pos, hitbox);
