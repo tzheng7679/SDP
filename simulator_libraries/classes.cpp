@@ -11,6 +11,15 @@ struct Vector3 {
     double z;
 };
 
+/*
+Basic struct representing a 2d vector of doubles, x and y represent the absolute position on the screen
+*/
+struct Vector2 {
+    double x;
+    double y;
+};
+
+
 
 /*
 TODO: decide if shapes should be structs or classes and edit them accordingly
@@ -26,14 +35,17 @@ struct Circle {
 };
 
 /*
-Two corners of a rectangle, x and y is one corner
-x2 and y2 are coordinates of opposite corner to base position
+Four corners of a rectangle
  */
 struct RectangleData {
-    double x;
-    double y;
-    double x2;
-    double y2;
+    //top left
+    Vector2 tl;
+    //top right
+    Vector2 tr;
+    //bottom left
+    Vector2 bl;
+    //bottom right
+    Vector2 br;
 };
 
 //Should we use a struct only, or use a class for rectangle?
@@ -44,7 +56,7 @@ class Rectangle {
     
     public:
         Rectangle() {
-            shape = {0, 0, 0, 0};
+            shape = {0, 0, 0, 0, 0, 0, 0, 0};
         }
         Rectangle(RectangleData rdata) {
             shape = rdata;
@@ -52,6 +64,22 @@ class Rectangle {
 
         RectangleData getShape() {
             return shape;
+        }
+        //top left corner (with no rotation) in global coordinates
+        Vector2 getTL() {
+            return shape.tl;
+        }
+        
+        //top right corner (with no rotation)
+        Vector2 getTR() {
+            return shape.tr;
+        }
+
+        Vector2 getBL() {
+            return shape.bl;
+        }
+        Vector2 getBR() {
+            return shape.br;
         }
 };
 
