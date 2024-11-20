@@ -51,13 +51,15 @@ struct Save{
 
         float health, TLx, TLy, BRx, BRy, px, py, pz;
 
-        scanf("%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f", &health, &TLx, &TLy, &BRx, &BRy, &px, &py, &pz);
+        fscanf(save, "%f%f%f%f%f%f%f%f", &health, &TLx, &TLy, &BRx, &BRy, &px, &py, &pz);
 
         Vector3 pos = {px, py, pz};
         Rectangle hitbox({TLx, TLy, BRx, TLy, TLx, BRy, BRx, BRy});
 
         fclose(save);
-        return Character(pos, hitbox);
+
+        Character c(pos, hitbox); c.setHealth(health);
+        return c;
     };
 
     // writes save file for GameObjects in array #obs, with n elements
