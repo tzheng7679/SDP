@@ -40,6 +40,7 @@ struct Save{
         f << pos.x NEWLINE
         f << pos.y NEWLINE
         f << pos.z NEWLINE
+        f << character.getSpriteIndex() NEWLINE
 
         f.close();
     };
@@ -50,15 +51,16 @@ struct Save{
         FILE* save = fopen(path, "r");
 
         float health, TLx, TLy, BRx, BRy, px, py, pz;
+        int spriteIndex;
 
-        fscanf(save, "%f%f%f%f%f%f%f%f", &health, &TLx, &TLy, &BRx, &BRy, &px, &py, &pz);
+        fscanf(save, "%f%f%f%f%f%f%f%f%d", &health, &TLx, &TLy, &BRx, &BRy, &px, &py, &pz, &spriteIndex);
 
         Vector3 pos = {px, py, pz};
         Rectangle hitbox({TLx, TLy, BRx, TLy, TLx, BRy, BRx, BRy});
 
         fclose(save);
 
-        Character c(pos, hitbox); c.setHealth(health);
+        Character c(pos, spriteIndex, hitbox); c.setHealth(health);
         return c;
     };
 
@@ -72,7 +74,8 @@ struct Save{
             f << pos.x TAB 
                 pos.y TAB 
                 pos.z TAB 
-                obs[i].getRotation() NEWLINE;
+                obs[i].getRotation() TAB
+                obs[i].getSpriteIndex() NEWLINE;
         }
 
         f.close();
@@ -84,9 +87,10 @@ struct Save{
         vector<GameObject> obs;
 
         float x, y, z, rotation;
+        int index;
 
-        while(fscanf(f, "%f\t%f\t%f\t%f\n", &x, &y, &z, &rotation) != EOF) {
-            GameObject ob = GameObject({x,y,z});
+        while(fscanf(f, "%f\t%f\t%f\t%f\t%f\n", &x, &y, &z, &rotation, &index) != EOF) {
+            GameObject ob = GameObject({x,y,z}, index);
             ob.setRotation(rotation);
             obs.push_back(ob);
         }

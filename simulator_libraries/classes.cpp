@@ -96,10 +96,14 @@ class GameObject {
         //rotation in degrees of the object from a baseline
         double rotation;
 
+        // sprite
+        int spriteIndex;
+
     public:
         
-        GameObject(Vector3 pos) {
+        GameObject(Vector3 pos, int spriteIndex) {
             position = pos;
+            this -> spriteIndex = spriteIndex;
         }
 
 
@@ -113,6 +117,14 @@ class GameObject {
 
         void setRotation(double r) {
             rotation = r;
+        }
+
+        int getSpriteIndex() {
+            return this -> spriteIndex;
+        }
+
+        void setSpriteIndex(int spriteIndex) {
+            this -> spriteIndex = spriteIndex;
         }
 };
 
@@ -140,7 +152,7 @@ class Character : public Hittable, public GameObject {
 
 
     public:
-        Character(Vector3 pos, Rectangle hitbox) : GameObject(pos), Hittable(hitbox){
+        Character(Vector3 pos, int spriteIndex, Rectangle hitbox) : GameObject(pos, spriteIndex), Hittable(hitbox){
             
         }
         double getHealth() {
@@ -196,7 +208,7 @@ class Sprites {
 
     private:
         //list of literlly every sprite in the game
-        static constexpr char* spritesList[] = {"player.png"};
+        static constexpr char* spritesList[] = {"sprites/player.png"};
     public:
         static constexpr char* getSpritePath(int index) {
             return spritesList[index];

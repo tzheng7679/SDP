@@ -7,6 +7,7 @@
 #include <FEHLCD.h>
 #include <classes.cpp>
 #include <FEHUtility.h>
+#include <FEHImages.h>
 
 // Representation of pause menu button
 struct Button {
@@ -110,7 +111,19 @@ struct Graphics {
     }
 
     static void drawGameObject(GameObject g) {
-
+        printf("Hello");
+        char* path = Sprites::getSpritePath(g.getSpriteIndex());
+        printf(path);
+        // TODO: Add implementation for drawing GameObject
+        FEHImage im;
+        im.Open(path);
+        Vector3 pos = g.getPosition();
+        im.Draw(pos.x, pos.y);
+    }
+    
+    static void awaitPress(int *x, int *y) {
+        while(!LCD.Touch(x, y));
+        while(LCD.Touch(x, y));
     }
 
     private:
@@ -126,10 +139,6 @@ struct Graphics {
             }
         }
 
-        static void awaitPress(int *x, int *y) {
-            while(!LCD.Touch(x, y));
-            while(LCD.Touch(x, y));
-        }
 };
 
 #endif
