@@ -1,6 +1,8 @@
 #ifndef Menus_cpp
 #define Menus_cpp
 
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 #define BUTTON_WIDTH 150
 #define BUTTON_HEIGHT 50
 #define PADDING 5
@@ -8,6 +10,7 @@
 #include <classes.cpp>
 #include <FEHUtility.h>
 #include <FEHImages.h>
+#include <vector>
 
 // Representation of pause menu button
 struct Button {
@@ -15,6 +18,15 @@ struct Button {
     int x;
     int y;
 
+    /**
+     * Returns if a click at (x, y) is within the boundaries of #this
+     * 
+     * @param x
+     *  The x position of the click
+     * @param y
+     *  The y position of the click
+     * @return Whether the button is clicked or not
+     */
     bool isClicked(int x, int y) {
         return (x >= this -> x && y >= this -> y && x <= this -> x + BUTTON_WIDTH && y <= this -> y + BUTTON_HEIGHT);
     }
@@ -22,6 +34,9 @@ struct Button {
 
 // Package for drawing any graphical stuff
 struct Graphics {
+    /**
+     * Draws the pause menu with associated buttons; executes until the "continue" button is pressed
+     */
     static void drawPauseMenu() {
         LCD.Clear();
 
@@ -110,28 +125,71 @@ struct Graphics {
         LCD.Clear();
     }
 
-    static void drawGameObject(GameObject g) {
-        printf("Hello");
+    /**
+     * Draws all the GameObjects in #obs
+     * @param obs
+     *  The list of GameObjects to draw
+     */
+    static void drawGameScreen(int camPos, std::vector<GameObject> obs) {
+        for(GameObject ob : obs) {
+            drawGameObjectNoUpdate(camPos, ob);
+        }
+        LCD.Update();
+    }
+
+    /**
+     * Draws a GameObject
+     * @param g
+     *  The GameObject to draw
+     */
+    static void drawGameObjectNoUpdate(int camPos, GameObject g) {
         char* path = Sprites::getSpritePath(g.getSpriteIndex());
-        printf(path);
-        // TODO: Add implementation for drawing GameObject
+        
         FEHImage im;
         im.Open(path);
         Vector3 pos = g.getPosition();
-        im.Draw(pos.x, pos.y);
+        
+        if(camPos <= pos.x && camPos + SCREEN_WIDTH >= pos.x) im.Draw(pos.x - camPos, pos.y); // only draw if in screen
     }
     
+    /**
+     * Draws a GameObject
+     * @param g
+     *  The GameObject to draw
+     */
+    static void drawGameObject(int camPos, GameObject g) {
+        drawGameObjectNoUpdate(camPos, g);
+        LCD.Update();
+    }
+
+    /**
+     * Executes until the screen is pressed and released; assigns final touch position to (*x, *y)
+     * @param x
+     *  The x-position variable to assign to
+     * @param y
+     *  The y-position variable to assign to
+     */
     static void awaitPress(int *x, int *y) {
         while(!LCD.Touch(x, y));
         while(LCD.Touch(x, y));
     }
 
     private:
+        /**
+         * Draws a button
+         * @param b
+         *  The button to draw
+         */
         static void drawButton(Button b) {
             LCD.DrawRectangle(b.x, b.y, BUTTON_WIDTH, BUTTON_HEIGHT);
             LCD.WriteAt(b.text, b.x + PADDING, b.y + PADDING);
         }
 
+        /**
+         * Draws all the buttons in the menu
+         * @param buttons
+         *  The array of buttons (continue, stats, instructions, credits))
+         */
         static void drawMenuInterface(Button buttons[4]) {
             LCD.Clear();
             for(int i = 0; i < 4; i++) {
