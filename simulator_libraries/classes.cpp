@@ -99,11 +99,23 @@ class GameObject {
         // sprite
         int spriteIndex;
 
+
+        //collidableState represents how object collides (0 is no collisions, 1 is collisions but no active collisions, and 2 is active collisions)
+        //(active collisions means collisions that acutally block other objects from moving)
+        int collidableState;
+
+        //whether or not object should be under influence of gravity
+        bool hasGravity;
+
     public:
         
         GameObject(Vector3 pos, int spriteIndex) {
             position = pos;
             this -> spriteIndex = spriteIndex;
+
+            //set default state of objects to not collide and not have gravity
+            collidableState = 0;
+            hasGravity = false;
         }
 
 
@@ -119,6 +131,7 @@ class GameObject {
             rotation = r;
         }
 
+
         void setPosition(Vector3 pos) {
             this -> position = pos;
         }
@@ -129,6 +142,18 @@ class GameObject {
 
         void setSpriteIndex(int spriteIndex) {
             this -> spriteIndex = spriteIndex;
+        }
+
+
+
+
+    
+        int collidableState() {
+            return collidableState;
+        }
+
+        bool hasGravity() {
+            return hasGravity;
         }
 };
 
@@ -169,7 +194,6 @@ class Character : public Hittable, public GameObject {
         void setSprite() {
             
         }
-
 
 
 };
