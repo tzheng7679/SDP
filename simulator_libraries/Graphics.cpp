@@ -1,6 +1,8 @@
 #ifndef Menus_cpp
 #define Menus_cpp
 
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 #define BUTTON_WIDTH 150
 #define BUTTON_HEIGHT 50
 #define PADDING 5
@@ -128,10 +130,11 @@ struct Graphics {
      * @param obs
      *  The list of GameObjects to draw
      */
-    static void drawGameScreen(std::vector<GameObject> obs) {
+    static void drawGameScreen(int camPos, std::vector<GameObject> obs) {
         for(GameObject ob : obs) {
-            drawGameObject(ob);
+            drawGameObjectNoUpdate(camPos, ob);
         }
+        LCD.Update();
     }
 
     /**
@@ -139,16 +142,26 @@ struct Graphics {
      * @param g
      *  The GameObject to draw
      */
-    static void drawGameObject(GameObject g) {
+    static void drawGameObjectNoUpdate(int camPos, GameObject g) {
         char* path = Sprites::getSpritePath(g.getSpriteIndex());
         
         FEHImage im;
         im.Open(path);
         Vector3 pos = g.getPosition();
-        im.Draw(pos.x, pos.y);
-        LCD.Update();
+        
+        if(camPos <= pos.x && camPos + SCREEN_WIDTH >= pos.x) im.Draw(pos.x - camPos, pos.y); // only draw if in screen
     }
     
+    /**
+     * Draws a GameObject
+     * @param g
+     *  The GameObject to draw
+     */
+    static void drawGameObject(int camPos, GameObject g) {
+        drawGameObjectNoUpdate(camPos, g);
+        LCD.Update();
+    }
+
     /**
      * Executes until the screen is pressed and released; assigns final touch position to (*x, *y)
      * @param x
@@ -175,7 +188,7 @@ struct Graphics {
         /**
          * Draws all the buttons in the menu
          * @param buttons
-         *  The array of buttons (continue, stats, instructions, credits)
+         *  The array of buttons (continue, stats, instructions, credits))
          */
         static void drawMenuInterface(Button buttons[4]) {
             LCD.Clear();

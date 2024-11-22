@@ -119,6 +119,10 @@ class GameObject {
             rotation = r;
         }
 
+        void setPosition(Vector3 pos) {
+            this -> position = pos;
+        }
+
         int getSpriteIndex() {
             return this -> spriteIndex;
         }
@@ -205,12 +209,9 @@ class Collisions {
 };
 
 class Sprites {
-
-    private:
-        //list of literlly every sprite in the game
-        static constexpr char* spritesList[] = {"sprites/player.png"};
     public:
         static constexpr char* getSpritePath(int index) {
+            char* spritesList[] = {"sprites/player.png", "sprites/block.png"};
             return spritesList[index];
         }
 

@@ -50,6 +50,9 @@ struct Save{
     static Character readCharacterData(char* path) {
         FILE* save = fopen(path, "r");
 
+        std::ifstream peeker(path);
+        if(peeker.peek() == EOF) return Character(Vector3(), 0, Rectangle()); // if no character detected, return default character
+
         float health, TLx, TLy, BRx, BRy, px, py, pz;
         int spriteIndex;
 
