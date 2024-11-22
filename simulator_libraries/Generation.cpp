@@ -15,17 +15,19 @@
 struct Generation {
     /**
      * Generates a vector of blocks for x_distance
-     * @param x_distance
-     * How far to draw blocks for
+     * @param left
+     * How many blocks left to draw
+     * @param right
+     * How many blocks right to draw
      */
-    static std::vector<GameObject> generateWorld(int x_distance) {
+    static std::vector<GameObject> generateWorld(int intial, int left, int right) {
         std::vector<GameObject> blocks;
 
-        for(int i = 0; i < x_distance / BLOCK_SIZE; i++) {
+        for(int i = left; i <= right / BLOCK_SIZE; i++) {
             int num_blocks = Random.RandInt() % BLOCK_VARIATION + MIN_BLOCKS;
 
             for(int b = 0; b < num_blocks; b++) {
-                GameObject g (Vector3({i * BLOCK_SIZE, SCREEN_HEIGHT - b * BLOCK_SIZE, 0}), BLOCK_INDEX);
+                GameObject g (Vector3({(i - intial) * BLOCK_SIZE, SCREEN_HEIGHT - b * BLOCK_SIZE, 0}), BLOCK_INDEX);
                 blocks.push_back(g);
             }
         }
