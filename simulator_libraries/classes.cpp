@@ -171,6 +171,26 @@ class Character : public Hittable, public GameObject {
 };
 
 
+class Block : public Hittable, public GameObject {
+
+    private:
+        double health;
+        int droppedItem;
+        
+    public:
+
+        Block(double constr_health) :{
+            health = constr_health;
+        }
+        double getHealth() {
+            return health;
+        }
+        void setHealth(double newHealth) {
+            health = newHealth;
+        }
+};
+
+
 
 
 
@@ -196,11 +216,26 @@ class Collisions {
     }
 
     /*
-    calculate if two rectangles are intersecting
+    Calculate if two ranges, x and y, overlap and return boolean if they do
+    */
+    static bool overlappingRanges(double x_start, double x_end, double y_start, double y_end) {
+        return (x_start <= y_end) && (y_start <= x_end);
+    }
+
+    /*
+    calculate if two rectangles are intersecting (rectangles must not be rotated)
     TODO: change return type to give more detail about nature of intersection
+    TODO: possibly make it work for rotated rectangles
     */
     static bool intersectingRectangles(Rectangle rect1, Rectangle rect2) {
+        //totally original code
+        Vector2 Pos1 = rect1.getBL();
+        Vector2 Pos2 = rect2.getBL();
 
+        Vector2 Rect1_TR = rect1.getTR();
+        Vector2 Rect2_TR = rect2.getTR();
+
+        return (Pos1.x < Rect2_TR.x) && (Pos1.y < Rect2_TR.y) && (Pos2.x < Rect1_TR.x) && (Pos2.y < Rect1_TR.y);
     }
 };
 
