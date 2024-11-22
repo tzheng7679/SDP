@@ -18,6 +18,10 @@ struct Button {
     int x;
     int y;
 
+    int width = BUTTON_WIDTH;
+    int height = BUTTON_HEIGHT;
+
+    int padding = PADDING;
     /**
      * Returns if a click at (x, y) is within the boundaries of #this
      * 
@@ -28,7 +32,7 @@ struct Button {
      * @return Whether the button is clicked or not
      */
     bool isClicked(int x, int y) {
-        return (x >= this -> x && y >= this -> y && x <= this -> x + BUTTON_WIDTH && y <= this -> y + BUTTON_HEIGHT);
+        return (x >= this -> x && y >= this -> y && x <= this -> x + width && y <= this -> y + height);
     }
 };
 
@@ -65,10 +69,7 @@ struct Graphics {
 
                 drawButton(exit);
                 
-                /* TODO:
-                Put stats here when necessary
-                */
-                LCD.WriteAt("put stats here", 100, 100);
+                LCD.WriteAt("Placeholder for stats", 0, 100);
                 
                 do {
                     awaitPress(&x, &y);
@@ -105,7 +106,7 @@ struct Graphics {
                 
                 drawButton(exit);
                 
-                char* lines[] = {"Kevin Zhang", "Tony Zheng"};
+                char* lines[] = {"Kevin Zhang", "Tony Zheng", "Instructor: Edgar Casale"};
                 int spacer = 0;
                 for(char* l : lines) {
                     LCD.WriteAt(l, PADDING, PADDING + BUTTON_HEIGHT + PADDING + spacer);
@@ -126,14 +127,22 @@ struct Graphics {
     }
 
     /**
-     * Draws all the GameObjects in #obs
+     * Draws all the GameObjects in #obs plus a puase button at pausePos
      * @param obs
-     *  The list of GameObjects to draw
+     *  The objects to draw
+     * @param c
+     *  The character object
+     * @param pause
+     *  The pause button object
      */
-    static void drawGameScreen(int camPos, std::vector<GameObject> obs) {
+    static void drawGameScreen(int camPos, std::vector<GameObject> obs, GameObject c, Button pause) {
+        LCD.Clear();
         for(GameObject ob : obs) {
             drawGameObjectNoUpdate(camPos, ob);
         }
+        drawButton(pause);
+        drawGameObjectNoUpdate(camPos, c);
+
         LCD.Update();
     }
 
@@ -181,8 +190,8 @@ struct Graphics {
          *  The button to draw
          */
         static void drawButton(Button b) {
-            LCD.DrawRectangle(b.x, b.y, BUTTON_WIDTH, BUTTON_HEIGHT);
-            LCD.WriteAt(b.text, b.x + PADDING, b.y + PADDING);
+            LCD.DrawRectangle(b.x, b.y, b.width, b.height);
+            LCD.WriteAt(b.text, b.x + b.padding, b.y + b.padding);
         }
 
         /**
