@@ -177,10 +177,20 @@ class GameObject {
             this -> spriteIndex = spriteIndex;
         }
 
+<<<<<<< HEAD
 
 
 
         
+=======
+        int getCollidableState() {
+            return collidableState;
+        }
+
+        bool getHasGravity() {
+            return hasGravity;
+        }
+>>>>>>> d06f37462606aa41382f00b9632b86f097c44bf3
 };
 
 /*
@@ -312,10 +322,10 @@ class Block : public Hittable {
         int droppedItem;
         
     public:
-
-        Block(double constr_health) :{
+        Block(double constr_health, Rectangle hitbox, Vector3 pos, int spriteIndex) : Hittable(hitbox), GameObject(pos, spriteIndex) {
             health = constr_health;
         }
+
         double getHealth() {
             return health;
         }
