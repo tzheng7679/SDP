@@ -1,26 +1,8 @@
 #include <math.h>
-
+#include "vectors.cpp"
 #ifndef classes_cpp
 #define classes_cpp
 /* Basic structs to store the data in */
-
-/*
-Basic struct representing a 3d vector of doubles. x and y represent x and y on screen, z represents the "depth" (for use in drawing)
-*/
-struct Vector3 {
-    double x;
-    double y;
-    double z;
-};
-
-/*
-Basic struct representing a 2d vector of doubles, x and y represent the absolute position on the screen
-*/
-struct Vector2 {
-    double x;
-    double y;
-};
-
 
 
 /*
@@ -80,6 +62,38 @@ class Rectangle {
         Vector2 getBR() {
             return shape.br;
         }
+
+
+        //utility functions
+
+        /*
+        Adds a coordinate pair (x, y) to this rectangle, while returning the result
+        */
+        Rectangle returnAdd(Vector2 vec) { 
+            return Rectangle({getTL() + vec, getTR() + vec, getBL() + vec, getBR() + vec});
+
+
+        }
+
+
+        //For the following functions, the rectangle is assumed to be non-rotated
+
+        /*
+        Get the width of the rectangle (assuming rectangle is non-rotated)
+        */
+        double getWidth() {
+            return shape.tr.x - shape.tl.x;
+        }
+        
+        /*
+        Get the height of the rectangle (assuming rectangle is non-rotated)
+        */
+       double getHeight() {
+            return shape.tl.y - shape.bl.y;
+       }
+
+
+
 };
 
 
@@ -93,6 +107,8 @@ class GameObject {
     private:
         Vector3 position;
 
+        Vector3 velocity;
+
         //rotation in degrees of the object from a baseline
         double rotation;
 
@@ -100,12 +116,6 @@ class GameObject {
         int spriteIndex;
 
 
-        //collidableState represents how object collides (0 is no collisions, 1 is collisions but no active collisions, and 2 is active collisions)
-        //(active collisions means collisions that acutally block other objects from moving)
-        int collidableState;
-
-        //whether or not object should be under influence of gravity
-        bool hasGravity;
 
     public:
         
@@ -113,14 +123,39 @@ class GameObject {
             position = pos;
             this -> spriteIndex = spriteIndex;
 
-            //set default state of objects to not collide and not have gravity
-            collidableState = 0;
-            hasGravity = false;
+        
         }
 
 
+        /*
+        Update method is called once per frame for all GameObjects in the scene
+        */
+        void Update() {
+            //update position based on the velocity
+            this -> position.x += this -> velocity.x;
+
+            this -> position.y += this -> velocity.y;
+
+            this -> position.z += this -> velocity.z;
+
+            
+        }
+
         Vector3 getPosition() {
             return position;
+        }
+
+        void setPosition(Vector3 pos) {
+            this -> position = pos;
+        }
+
+
+        Vector3 getVelocity() {
+            return velocity;
+        }
+
+        void setVelocity(Vector3 vel) {
+            velocity = vel;
         }
 
         double getRotation() {
@@ -132,9 +167,7 @@ class GameObject {
         }
 
 
-        void setPosition(Vector3 pos) {
-            this -> position = pos;
-        }
+        
 
         int getSpriteIndex() {
             return this -> spriteIndex;
@@ -147,38 +180,111 @@ class GameObject {
 
 
 
-    
-        int collidableState() {
-            return collidableState;
-        }
-
-        bool hasGravity() {
-            return hasGravity;
-        }
+        
 };
 
 /*
-Hittable class is a class that simply contains the hitbox
-Hitbox is just a rectangle with certain points
+Hittable class is a class that defines a GameObject with collisions by extending GameObject and adding collision stuff
+The rectangle hitbox is represented internally as the LOCAL POSITION of the rectangle relative to the player
 */
-class Hittable {
-    private:
+class Hittable : public GameObject{
+private:
     Rectangle hitbox;
-    public:
+
+    //whether or not the colliding object is standing on the ground
+    bool grounded;
+
+
+    //collidableState represents how object collides (0 is no collisions, 1 is collisions but no active collisions, and 2 is active collisions)
+    //(active collisions means collisions that acutally block other objects from moving)
+    int collidableState;
+
+    //whether or not object should be under influence of gravity
+    bool hasGravity;
+
+public:
     Hittable(Rectangle hbox) {
         hitbox = hbox;
+
+        grounded = false;
+
+        //set default state of objects to not collide and not have gravity
+        collidableState = 0;
+        hasGravity = false;
     }
-    Rectangle getHitbox() {return hitbox;}
+    
+    //returns hitbox as a rectangle of global coordinates
+    Rectangle getHitbox() {
+        return hitbox.returnAdd({getPosition().x, getPosition().y});
+    }
+
+    //gets local coordinates of the hitbox
+    Rectangle getHitboxLocal() {return hitbox;}
+
+
+
+
+    bool isGrounded() {
+        return grounded;
+    }
+
+    void setGrounded(bool val) {
+        grounded = val;
+    }
+
+
+    /*
+    Returns the collidableState of the GameObject (0 is no collisions, 1 is detectable but no active collisions, 2 is fully active collisions)
+    */
+    int collidableState() {
+        return collidableState;
+    }
+
+    /*
+    Sets the collidableState of the GameObject (0 is no collisions, 1 is detectable but no active collisions, 2 is fully active collisions)
+    */
+    void setCollidableState(int state) {
+        collidableState = state;
+
+    }
+
+
+    /*
+    Returns whether or not the GameObject has gravity
+    */
+    bool hasGravity() {
+        return hasGravity;
+    }
+
+    /*
+    Sets the boolean value hasGravity to val
+    */
+    void setGravity(bool val) {
+        hasGravity = val;
+    }
+
+    /*
+    Method to determine what happens on hit for the object (NOTE: this will BE OVERRIDDEN TO IMPLEMENT NEW FUNCTIONALITY)
+    */
+    int onHit() {
+        //TODO: fill in the default case for collisions
+    }
+
+    
 };
 
 /*
 Character class is what all NPCs, Enemies, and the player's character will have.
 All character objects will of course have a hitbox and be a gameobject
 */
-class Character : public Hittable, public GameObject {
+class Character : public Hittable {
     private:
         double health;
 
+        //the last direction the character moved (used to help check collisions)
+        int lastDirection;
+
+    
 
     public:
         Character(Vector3 pos, int spriteIndex, Rectangle hitbox) : GameObject(pos, spriteIndex), Hittable(hitbox){
@@ -199,7 +305,7 @@ class Character : public Hittable, public GameObject {
 };
 
 
-class Block : public Hittable, public GameObject {
+class Block : public Hittable {
 
     private:
         double health;
@@ -222,8 +328,9 @@ class Block : public Hittable, public GameObject {
 
 
 
-/*utility class for handling collisions
+/* Utility class for handling collisions
 
+Collisions class contains static methods that are useful for handling collisions
 */
 class Collisions {
 
@@ -251,20 +358,63 @@ class Collisions {
     }
 
     /*
-    calculate if two rectangles are intersecting (rectangles must not be rotated)
-    TODO: change return type to give more detail about nature of intersection
-    TODO: possibly make it work for rotated rectangles
+    Calculate if two rectangles are intersecting (rectangles must not be rotated)
+    @returns if they are intersecting or not
+
+    @todo change return type to give more detail about nature of intersection
+    @todo possibly make it work for rotated rectangles
     */
     static bool intersectingRectangles(Rectangle rect1, Rectangle rect2) {
         //totally original code
-        Vector2 Pos1 = rect1.getBL();
-        Vector2 Pos2 = rect2.getBL();
+        Vector2 Pos1 = rect1.getTL();
+        Vector2 Pos2 = rect2.getTL();
 
-        Vector2 Rect1_TR = rect1.getTR();
-        Vector2 Rect2_TR = rect2.getTR();
+        Vector2 Rect1_BR = rect1.getBR();
+        Vector2 Rect2_BR = rect2.getBR();
 
-        return (Pos1.x < Rect2_TR.x) && (Pos1.y < Rect2_TR.y) && (Pos2.x < Rect1_TR.x) && (Pos2.y < Rect1_TR.y);
+        //code from https://stackoverflow.com/a/27624434
+        return (Pos1.x < Rect2_BR.x) && (Pos1.y < Rect2_BR.y) && (Pos2.x < Rect1_BR.x) && (Pos2.y < Rect1_BR.y);
+  
     }
+
+    /*
+    pushes Character out of block that they are colliding with by mutating the @p character
+    outside of the block (assumes that both hitbox rectangles are non-rotated)
+
+    @pre the character and collidingBlock are already intersecting
+
+    */
+   static void pushCharacter(Character* character, Rectangle collidingBlock) {
+    
+        /*
+        Push the character out by reversing the velocity until the character doesn't collide with the hitbo anymore
+        */
+        Rectangle hitbox = character -> getHitbox();
+
+        //local position of character hitbox relative to hitbox
+        Vector2 localPos = collidingBlock.getTL() - hitbox.getTL();
+
+        Vector3 velocity = character -> getVelocity();
+
+        //reversed velocity
+        Vector3 reversedVelocity = -1 * velocity;
+
+
+
+
+        //this is a buggy, hacky fix for pushing out (character will def vibrate and jitter around walls)
+        //FIX THIS LATER if time
+        while (true) {
+            character -> setPosition(character -> getPosition() + reversedVelocity);
+            if (intersectingRectangles(character -> getHitbox(), collidingBlock)) {
+                break;
+            }
+        }
+
+        
+
+   }
+
 };
 
 class Sprites {
