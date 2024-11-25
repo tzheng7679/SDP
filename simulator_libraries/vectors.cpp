@@ -20,6 +20,15 @@ struct Vector2 {
     double y;
 };
 
+
+/*
+declare useful vector constants
+*/
+const Vector3 VECTOR3_ZERO = Vector3{0, 0, 0};
+const Vector2 VECTOR2_ZERO = Vector2{0, 0};
+
+
+
 /*
 declare operations for vectors to make life easier
 */
@@ -129,12 +138,12 @@ Vector2 operator *(const Vector2& vec, const double& scalar) {
 Division operations between vectors and scalars
 */
 Vector3 operator /(const Vector3& vec, const double& scalar) {
-    return {vec.x/scalar, vec.y/scalar, vec.z/scalar};
+    return Vector3{vec.x/scalar, vec.y/scalar, vec.z/scalar};
 }
 
 
 Vector2 operator /(const Vector2& vec, const double& scalar) {
-    return {vec.x/scalar, vec.y/scalar};
+    return Vector2{vec.x/scalar, vec.y/scalar};
 }
 
 #endif

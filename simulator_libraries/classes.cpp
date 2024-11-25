@@ -1,5 +1,6 @@
 #include <math.h>
 #include "vectors.cpp"
+#include <stdio.h>
 #ifndef classes_cpp
 #define classes_cpp
 /* Basic structs to store the data in */
@@ -212,6 +213,8 @@ class GameObject {
         void setGravity(bool grav) {
             this -> hasGravity = grav;
         }
+
+        
 };
 
 /*
@@ -267,8 +270,9 @@ class Hittable : public GameObject {
 
         /*
         Method to determine what happens on hit for the object (NOTE: this will BE OVERRIDDEN TO IMPLEMENT NEW FUNCTIONALITY)
+        TODO: determine if onHit() Should be in Hittable or in the Character class
         */
-        int onHit() {
+        int onHit(Hittable* otherHit) {
             //TODO: fill in the default case for collisions
         }
 
@@ -307,11 +311,40 @@ class Character : public Hittable {
 };
 
 
+
+class Player : public Character {
+    private:
+    
+    public:
+    Player(Vector3 pos, int spriteIndex, Rectangle hitbox) : Character(pos, spriteIndex, hitbox) {
+
+        
+
+    
+    }
+
+    
+    /*
+    Overridden Update method for the player
+
+     */
+    void Update() {
+        
+    }
+    //overridden onHit method for the player
+    void onHit(Hittable* otherHit) {
+        setVelocity(VECTOR3_ZERO);
+        printf("The Player's onhit method has executed");
+    }
+
+};
+
+
 class Block : public Hittable {
 
     private:
         double health;
-        int droppedItem;
+
         
     public:
         Block(double constr_health, Rectangle hitbox, Vector3 pos, int spriteIndex) : Hittable(hitbox, pos, spriteIndex) {
@@ -324,7 +357,43 @@ class Block : public Hittable {
         void setHealth(double newHealth) {
             health = newHealth;
         }
+
+        /*
+        return the dropped item, override the getDroppedItem method to change the index of the dropped item
+        the number returned is the ID of the dropped item (or index, if we implement that)
+        */
+        int getDroppedItem() {
+            return -1;
+        }
+
+        
 };
+
+
+
+
+class SandBlock : public Block {
+
+    private:
+
+    public:
+        /*
+        Constructs block with a hitbox of 1
+        */
+        SandBlock(double constr_health, Rectangle hitbox, Vector3 pos)  : Block(constr_health, hitbox, pos, 1) {
+
+        }
+        
+
+        /*
+        Get index of SandBlock (which is 1)
+        */
+        int getDroppedItem() {
+            return 1;
+        }
+
+};
+
 
 
 
@@ -378,6 +447,8 @@ class Collisions {
         return (Pos1.x < Rect2_BR.x) && (Pos1.y < Rect2_BR.y) && (Pos2.x < Rect1_BR.x) && (Pos2.y < Rect1_BR.y);
   
     }
+
+
 
     /*
     pushes Character out of block that they are colliding with by mutating the @p character
