@@ -212,6 +212,8 @@ class GameObject {
         void setGravity(bool grav) {
             this -> hasGravity = grav;
         }
+
+        
 };
 
 /*
@@ -379,7 +381,7 @@ class Collisions {
   
     }
 
-    
+
 
     /*
     pushes Character out of block that they are colliding with by mutating the @p character
