@@ -173,11 +173,11 @@ class GameObject {
         }
 
         double getRotation() {
-            return rotation;
+            return this -> rotation;
         }
 
         void setRotation(double r) {
-            rotation = r;
+            this -> rotation = r;
         }
 
 
@@ -198,94 +198,79 @@ class GameObject {
         bool getHasGravity() {
             return this -> hasGravity;
         }
+
+
+        /*
+        Sets the collidableState of the GameObject (0 is no collisions, 1 is detectable but no active collisions, 2 is fully active collisions)
+        */
+        void setCollidableState(int state) {
+            this -> collidableState = state;
+
+        }
+
+
+        void setGravity(bool grav) {
+            this -> hasGravity = grav;
+        }
 };
 
 /*
 Hittable class is a class that defines a GameObject with collisions by extending GameObject and adding collision stuff
 The rectangle hitbox is represented internally as the LOCAL POSITION of the rectangle relative to the player
 */
-class Hittable : public GameObject{
-private:
-    Rectangle hitbox;
+class Hittable : public GameObject {
+    private:
+        Rectangle hitbox;
 
-    //whether or not the colliding object is standing on the ground
-    bool grounded;
+        //whether or not the colliding object is standing on the ground
+        bool grounded;
 
+    public:
+        Hittable(Rectangle hbox) : GameObject({0, 0, 0}, -1) {
+            hitbox = hbox;
 
-    //collidableState represents how object collides (0 is no collisions, 1 is collisions but no active collisions, and 2 is active collisions)
-    //(active collisions means collisions that acutally block other objects from moving)
-    int collidableState;
+            grounded = false;
 
-    //whether or not object should be under influence of gravity
-    bool hasGravity;
+            //set default state of objects to not collide and not have gravity
+            this->setCollidableState(0);
+            this->setGravity(false);
+        }
 
-public:
-    Hittable(Rectangle hbox) {
-        hitbox = hbox;
+        Hittable(Rectangle hbox, Vector3 pos, int spriteIndex) : GameObject(pos, spriteIndex) {
+            this -> hitbox = hbox;
 
-        grounded = false;
+            this -> grounded = false;
 
-        //set default state of objects to not collide and not have gravity
-        collidableState = 0;
-        hasGravity = false;
-    }
-    
-    //returns hitbox as a rectangle of global coordinates
-    Rectangle getHitbox() {
-        return hitbox.returnAdd({getPosition().x, getPosition().y});
-    }
+            //set default state of objects to not collide and not have gravity
+            this->setCollidableState(0);
+            this->setGravity(false);
+        }
 
-    //gets local coordinates of the hitbox
-    Rectangle getHitboxLocal() {return hitbox;}
+        //returns hitbox as a rectangle of global coordinates
+        Rectangle getHitbox() {
+            return hitbox.returnAdd({getPosition().x, getPosition().y});
+        }
 
-
-
-
-    bool isGrounded() {
-        return grounded;
-    }
-
-    void setGrounded(bool val) {
-        grounded = val;
-    }
+        //gets local coordinates of the hitbox
+        Rectangle getHitboxLocal() {return hitbox;}
 
 
-    /*
-    Returns the collidableState of the GameObject (0 is no collisions, 1 is detectable but no active collisions, 2 is fully active collisions)
-    */
-    int collidableState() {
-        return collidableState;
-    }
-
-    /*
-    Sets the collidableState of the GameObject (0 is no collisions, 1 is detectable but no active collisions, 2 is fully active collisions)
-    */
-    void setCollidableState(int state) {
-        collidableState = state;
-
-    }
 
 
-    /*
-    Returns whether or not the GameObject has gravity
-    */
-    bool hasGravity() {
-        return hasGravity;
-    }
+        bool isGrounded() {
+            return grounded;
+        }
 
-    /*
-    Sets the boolean value hasGravity to val
-    */
-    void setGravity(bool val) {
-        hasGravity = val;
-    }
+        void setGrounded(bool val) {
+            grounded = val;
+        }
 
-    /*
-    Method to determine what happens on hit for the object (NOTE: this will BE OVERRIDDEN TO IMPLEMENT NEW FUNCTIONALITY)
-    */
-    int onHit() {
-        //TODO: fill in the default case for collisions
-    }
+        /*
+        Method to determine what happens on hit for the object (NOTE: this will BE OVERRIDDEN TO IMPLEMENT NEW FUNCTIONALITY)
+        */
+        int onHit() {
+            //TODO: fill in the default case for collisions
+        }
 
     
 };
@@ -304,7 +289,7 @@ class Character : public Hittable {
     
 
     public:
-        Character(Vector3 pos, int spriteIndex, Rectangle hitbox) : GameObject(pos, spriteIndex), Hittable(hitbox){
+        Character(Vector3 pos, int spriteIndex, Rectangle hitbox) : Hittable(hitbox, pos, spriteIndex){
             
         }
         double getHealth() {
@@ -329,7 +314,7 @@ class Block : public Hittable {
         int droppedItem;
         
     public:
-        Block(double constr_health, Rectangle hitbox, Vector3 pos, int spriteIndex) : Hittable(hitbox), GameObject(pos, spriteIndex) {
+        Block(double constr_health, Rectangle hitbox, Vector3 pos, int spriteIndex) : Hittable(hitbox, pos, spriteIndex) {
             health = constr_health;
         }
 
