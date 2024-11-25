@@ -135,7 +135,7 @@ struct Graphics {
      * @param pause
      *  The pause button object
      */
-    static void drawGameScreen(int camPos, std::vector<GameObject> obs, GameObject c, Button pause) {
+    static void drawGameScreen(int camPos, std::deque<GameObject> obs, GameObject c, Button pause) {
         LCD.Clear();
         for(GameObject ob : obs) {
             drawGameObjectNoUpdate(camPos, ob);
