@@ -394,6 +394,8 @@ class Collisions {
   
     }
 
+    
+
     /*
     pushes Character out of block that they are colliding with by mutating the @p character
     outside of the block (assumes that both hitbox rectangles are non-rotated)
