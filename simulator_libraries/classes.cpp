@@ -115,6 +115,9 @@ class GameObject {
         // sprite
         int spriteIndex;
 
+        int collidableState;
+
+        bool hasGravity;
 
 
     public:
@@ -123,7 +126,18 @@ class GameObject {
             position = pos;
             this -> spriteIndex = spriteIndex;
 
-        
+            this -> collidableState = 0;
+            
+            this -> hasGravity = false;
+        }
+
+        GameObject(Vector3 pos, int spriteIndex, int collidableState, bool hasGravity) {
+            position = pos;
+            this -> spriteIndex = spriteIndex;
+
+            this -> collidableState = collidableState;
+            
+            this -> hasGravity = hasGravity;
         }
 
 
@@ -177,20 +191,13 @@ class GameObject {
             this -> spriteIndex = spriteIndex;
         }
 
-<<<<<<< HEAD
-
-
-
-        
-=======
         int getCollidableState() {
-            return collidableState;
+            return this -> collidableState;
         }
 
         bool getHasGravity() {
-            return hasGravity;
+            return this -> hasGravity;
         }
->>>>>>> d06f37462606aa41382f00b9632b86f097c44bf3
 };
 
 /*

@@ -1,3 +1,6 @@
+#ifndef vectors_cpp
+#define vectors_cpp
+
 /*
 Basic struct representing a 3d vector of doubles. x and y represent x and y on screen, z represents the "depth" (for use in drawing)
 */
@@ -133,3 +136,5 @@ Vector3 operator /(const Vector3& vec, const double& scalar) {
 Vector2 operator /(const Vector2& vec, const double& scalar) {
     return {vec.x/scalar, vec.y/scalar};
 }
+
+#endif
