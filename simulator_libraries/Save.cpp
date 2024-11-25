@@ -15,17 +15,14 @@ using namespace std;
 #define NEWLINE << "\n";
 #define TAB << "\t" << 
 
-/* Writes save data for character object to file at #path */
-/* w/ format below
-health
-hitbox.TL.x
-hitbox.TL.y
-hitbox.BR.x
-hitbox.BR.y
-position.x
-position.y
-position.z
-*/
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
+
+bool onScreen(int x, int camPos) {
+    return x >= camPos && x <= camPos + SCREEN_WIDTH;
+};
+
+/// @brief Util. class for dealing with data; primarily deals with "caching" blocks that may need to be written to screen and with save files
 struct Save{
     static void writeCharacterSave(char* path, Character character) {
         ofstream f(path);
@@ -52,7 +49,7 @@ struct Save{
         FILE* save = fopen(path, "r");
 
         std::ifstream peeker(path);
-        if(peeker.peek() == EOF) return Character(Vector3(), 0, Rectangle()); // if no character detected, return default character
+        if(peeker.peek() == EOF) return Character(Vector3(), 0, Rectangle(RectangleData {0, 0, 0, 20, 5, 0, 5, 20})); // if no character detected, return default character
 
         float health, TLx, TLy, BRx, BRy, px, py, pz;
         int spriteIndex;
@@ -103,6 +100,38 @@ struct Save{
 
         return obs;
     };
+
+    static void shiftObs(int newX, vector<GameObject> *left, deque<GameObject> *proxim, vector<GameObject> *right) {
+        // push proxim left end into left
+        while((*proxim).size() > 0 && 
+                !(onScreen((*proxim).front().getPosition().x, newX))
+            ) {
+                (*left).push_back((*proxim).front());
+                (*proxim).pop_front();
+            }
+        
+        // push (*proxim) (*right) end into (*right)
+        while((*proxim).size() > 0 && 
+                !onScreen((*proxim).front().getPosition().x, newX)
+            )   {
+                    (*left).push_back((*proxim).back());
+                    (*proxim).pop_back();
+                }
+        // push (*left) (*right) end into (*proxim) (*left) end
+        while((*left).size() > 0 && 
+                onScreen((*left).back().getPosition().x, newX)
+            ) {
+                (*proxim).push_front((*left).back());
+                (*left).pop_back();
+            }
+        // push (*proxim) (*right) end into (*right)
+        while((*right).size() > 0 && 
+                onScreen((*right).back().getPosition().x, newX)
+            ){
+                    (*proxim).push_back((*right).back());
+                    (*right).pop_back();
+                }        
+    }
 };
 
 #endif

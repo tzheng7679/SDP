@@ -1,8 +1,12 @@
+#ifndef classes_cpp
+#define classes_cpp
+
 #include <math.h>
 #include "vectors.cpp"
 #include <stdio.h>
-#ifndef classes_cpp
-#define classes_cpp
+#include <deque>
+#define SCREEN_HEIGHT 240
+#define BLOCK_SIZE 10
 /* Basic structs to store the data in */
 
 
@@ -72,8 +76,6 @@ class Rectangle {
         */
         Rectangle returnAdd(Vector2 vec) { 
             return Rectangle({getTL() + vec, getTR() + vec, getBL() + vec, getBR() + vec});
-
-
         }
 
 
@@ -317,10 +319,7 @@ class Player : public Character {
     
     public:
     Player(Vector3 pos, int spriteIndex, Rectangle hitbox) : Character(pos, spriteIndex, hitbox) {
-
         
-
-    
     }
 
     
@@ -329,7 +328,7 @@ class Player : public Character {
 
      */
     void Update() {
-        
+        GameObject::Update();
     }
     //overridden onHit method for the player
     void onHit(Hittable* otherHit) {
@@ -487,6 +486,16 @@ class Collisions {
         
 
    }
+
+    static bool onGround(Character c, std::deque<GameObject> proxim) {
+        if(c.getHitbox().getBL().y >= SCREEN_HEIGHT) return true;
+
+        for(GameObject g : proxim) {
+            Vector3 pos = g.getPosition();
+            if(c.getPosition().x - pos.x >= 0 && c.getPosition().x - pos.x <= BLOCK_SIZE && c.getHitbox().getBL().y >= g.getPosition().y - 1) return true;
+        }
+        return false;
+    }
 
 };
 

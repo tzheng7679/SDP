@@ -7,6 +7,7 @@
 #include <iostream>
 #include <Graphics.cpp>
 #include <Generation.cpp>
+#include <winuser.h>
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -21,49 +22,34 @@
 #define VELOCITY_INITIAL 1
 #define VELOCITY_MAX 3.0
 #define ACCELERATION 1
+#define G 0.5
 #define DELTA_T .00
 
-bool onScreen(int x, int camPos) {
-    return x >= camPos && x <= camPos + SCREEN_WIDTH;
+#define CAM_POS c.getPosition().x - SCREEN_WIDTH / 2
+
+enum Direction {
+    LEFT,
+    CENTER,
+    RIGHT
 };
 
-/// @brief Shifts GameObjects based on proximity to character to speed up drawing
-/// @pre Objects in each vector are sorted in ascending order by x-position
-/// @param left Vector containing objects far to the left of the character (front of stack is right-most obs)
-/// @param proxim Double-ended queue containing objects within drawing distance of the character
-/// @param right Vector containing objects far to the right of the character (front of stack is left-most obs)
-void shiftObs(int newX, vector<GameObject> *left, deque<GameObject> *proxim, vector<GameObject> *right) {
-    // push proxim left end into left
-    while((*proxim).size() > 0 && 
-            !(onScreen((*proxim).front().getPosition().x, newX))
-        ) {
-            (*left).push_back((*proxim).front());
-            (*proxim).pop_front();
-        }
-    
-    // push (*proxim) (*right) end into (*right)
-    while((*proxim).size() > 0 && 
-            !onScreen((*proxim).front().getPosition().x, newX)
-        )   {
-                (*left).push_back((*proxim).back());
-                (*proxim).pop_back();
-            }
-    // push (*left) (*right) end into (*proxim) (*left) end
-    while((*left).size() > 0 && 
-            onScreen((*left).back().getPosition().x, newX)
-        ) {
-            (*proxim).push_front((*left).back());
-            (*left).pop_back();
-        }
-    // push (*proxim) (*right) end into (*right)
-    while((*right).size() > 0 && 
-            onScreen((*right).back().getPosition().x, newX)
-        ){
-                (*proxim).push_back((*right).back());
-                (*right).pop_back();
-            }        
-};
+int sign(double x) {
+    if(x < 0) return -1;
+    if(x > 0) return 1;
+    return 0;
+}
 
+int horizontalKeyDown() {
+    if((GetKeyState('D') & 0x8000) || (GetKeyState(VK_RIGHT) & 0x8000 )) return VK_RIGHT;
+    if((GetKeyState('A') & 0x8000) || (GetKeyState(VK_LEFT) & 0x8000 )) return VK_LEFT;
+    return -1;
+}
+
+int verticalKeyDown() {
+    if((GetKeyState('S') & 0x8000) || (GetKeyState(VK_DOWN) & 0x8000 )) return VK_DOWN;
+    if((GetKeyState('W') & 0x8000) || (GetKeyState(VK_UP) & 0x8000 )) return VK_UP;
+    return -1;
+}
 int main() {
     int x, y;
 
@@ -72,13 +58,13 @@ int main() {
     c.setPosition({0, 25, 0});
     deque<GameObject> proxim = Save::readGameObjects(O_SAVE_PATH);
     if(proxim.size() == 0) { // if no GameObjects saved, generate random world
-        proxim = Generation::generateWorld(c.getPosition().x, -1000, 1000);
+        proxim = Generation::generateWorld(c.getPosition().x, 0, 1000);
     }
 
     vector<GameObject> left;
     vector<GameObject> right;
+    Save::shiftObs(CAM_POS, &left, &proxim, &right); // shift gameobjects into appropriate vectors
 
-    shiftObs(0, &left, &proxim, &right);
     cout << "blah";
 
     int xtemp, ytemp;
@@ -89,49 +75,56 @@ int main() {
             double velocity = 0;
 
             // while the screen is still touched
-            while(LCD.Touch(&x, &y)) {
-                // if not touching the pause button
-                if(!pause.isClicked(x, y)) {
-                    // Move screen if cursor is not in the center of the screen
-                    if(x > SCREEN_WIDTH/2 + 20) { // if touching right of character
-                        /*
-                        * set velocity to small initial value if you were moving to the left
-                        * otherwise, increase velocity since you were moving to the right initially
-                        */ 
-                        if(velocity <= 0) velocity = VELOCITY_INITIAL;
-                        else velocity = min(velocity + ACCELERATION, VELOCITY_MAX); // increase velocity until it reaches maximum
-
-                        //update position
-                        Vector3 pos = c.getPosition();
-                        pos.x += velocity;
-                        c.setPosition(pos);
-
-                        //update screen, and sleep
-                        Graphics::drawGameScreen(c.getPosition().x - SCREEN_WIDTH / 2, proxim, c, pause);
-                        Sleep(DELTA_T);
-                    } else if(x < SCREEN_WIDTH/2 - 20) {
-                        // see above
-                        if(velocity >= 0) velocity = -VELOCITY_INITIAL;
-                        else velocity= max(velocity - ACCELERATION, -VELOCITY_MAX); // increase velocity until it reaches maximum
-
-                        // update position
-                        Vector3 pos = c.getPosition();
-                        pos.x += velocity;
-                        c.setPosition(pos);
-
-                        // update screen
-                        Graphics::drawGameScreen(c.getPosition().x - SCREEN_WIDTH / 2, proxim, c, pause);
-                        Sleep(DELTA_T);
-                    }
-                }
-
-                shiftObs(c.getPosition().x - SCREEN_WIDTH / 2, &left, &proxim, &right);
-            } 
+            while(LCD.Touch(&x, &y)) { /* wait for touch to release */ }
 
             // if cursor ended on pause button, draw pause menu
             if(pause.isClicked(x,y)) Graphics::drawPauseMenu();
         }
 
-        Graphics::drawGameScreen(c.getPosition().x - SCREEN_WIDTH / 2, proxim, c, pause);
+        int hkey = horizontalKeyDown();
+        int vkey = verticalKeyDown();
+
+        Vector3 vel = c.getVelocity();
+        switch(hkey) { // switch horizontal component
+            case VK_RIGHT:
+                if(vel.x <= 0) vel.x = VELOCITY_INITIAL;
+                else vel.x = min(vel.x + ACCELERATION, VELOCITY_MAX);
+                break;
+
+            case VK_LEFT:
+                if(vel.x >= 0) vel.x = -VELOCITY_INITIAL;
+                else vel.x = max(vel.x - ACCELERATION, -VELOCITY_MAX);
+                break;
+            
+            default:
+                vel.x = 0;
+                break;
+        }
+        
+        if(c.isGrounded()) {
+            switch(vkey) {
+                case VK_UP:
+                    vel.y = -5;
+                    break;
+
+                case VK_DOWN:
+                    break;
+                    
+                default:
+                    vel.y = 0;
+                    break;
+            }
+        } else {
+            cout << "ssdsd";
+            vel.y += G;
+        }
+
+
+        c.setVelocity(vel);
+        c.setGrounded(Collisions::onGround(c, proxim));
+
+        c.Update();
+
+        Graphics::drawGameScreen(CAM_POS, proxim, c, pause);
     }
 }
