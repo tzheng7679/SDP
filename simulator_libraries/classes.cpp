@@ -3,6 +3,13 @@
 #include <stdio.h>
 #ifndef classes_cpp
 #define classes_cpp
+
+/*
+Basic Constants
+*/
+const double GRAVITY_ACCELERATION = 3;
+
+
 /* Basic structs to store the data in */
 
 
@@ -121,6 +128,7 @@ class GameObject {
         bool hasGravity;
 
 
+
     public:
         
         GameObject(Vector3 pos, int spriteIndex) {
@@ -139,6 +147,7 @@ class GameObject {
             this -> collidableState = collidableState;
             
             this -> hasGravity = hasGravity;
+      
         }
 
 
@@ -147,11 +156,7 @@ class GameObject {
         */
         void Update() {
             //update position based on the velocity
-            this -> position.x += this -> velocity.x;
-
-            this -> position.y += this -> velocity.y;
-
-            this -> position.z += this -> velocity.z;
+            this -> position = this -> position + velocity;
 
             
         }
@@ -214,7 +219,7 @@ class GameObject {
             this -> hasGravity = grav;
         }
 
-        
+
 };
 
 /*
@@ -329,8 +334,15 @@ class Player : public Character {
 
      */
     void Update() {
-        
+
+        setPosition(getPosition() + getVelocity());
+        if (getHasGravity() && !isGrounded()) {
+            setVelocity(getVelocity() + Vector3{0, GRAVITY_ACCELERATION, 0});
+        }
+
     }
+
+
     //overridden onHit method for the player
     void onHit(Hittable* otherHit) {
         setVelocity(VECTOR3_ZERO);
@@ -351,11 +363,17 @@ class Block : public Hittable {
             health = constr_health;
         }
 
+
+        void Update() {
+            //do nothing
+        }
+
         double getHealth() {
             return health;
         }
         void setHealth(double newHealth) {
             health = newHealth;
+            
         }
 
         /*
@@ -366,6 +384,7 @@ class Block : public Hittable {
             return -1;
         }
 
+        
         
 };
 
@@ -396,6 +415,38 @@ class SandBlock : public Block {
 
 
 
+/*
+Item class for player items
+
+TODO: finish defining Item, Weapon and their subclasses
+*/
+
+class Item {
+    private:
+        int id;
+    public:
+
+
+};
+
+
+class Weapon : public Item {
+    private:
+
+    public:
+};
+
+class DragonSword : public Weapon {
+
+
+
+    private:
+
+
+    public:
+
+
+};
 
 
 
