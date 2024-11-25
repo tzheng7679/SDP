@@ -20,6 +20,15 @@ struct Vector2 {
     double y;
 };
 
+
+/*
+declare useful vector constants
+*/
+const Vector3 VECTOR3_ZERO = Vector3{0, 0, 0};
+const Vector2 VECTOR2_ZERO = Vector2{0, 0};
+
+
+
 /*
 declare operations for vectors to make life easier
 */
