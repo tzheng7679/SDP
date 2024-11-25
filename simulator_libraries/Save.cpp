@@ -7,6 +7,7 @@
 #include <fstream>
 #include "classes.cpp"
 #include <vector>
+#include <deque>
 #include <iostream>
 using namespace std;
 
@@ -68,7 +69,7 @@ struct Save{
     };
 
     // writes save file for GameObjects in array #obs, with n elements
-    static void writeGameObjects(char* path, vector<GameObject> obs) {
+    static void writeGameObjects(char* path, deque<GameObject> obs) {
         ofstream f(path);
         
         for(int i = 0; i < obs.size(); i++) {
@@ -85,9 +86,9 @@ struct Save{
     };
     
     // writes save file for GameObjects in array #obs, with n elements
-    static vector<GameObject> readGameObjects(char* path) {
+    static deque<GameObject> readGameObjects(char* path) {
         FILE* f = fopen(path, "r");
-        vector<GameObject> obs;
+        deque<GameObject> obs;
 
         float x, y, z, rotation;
         int index;

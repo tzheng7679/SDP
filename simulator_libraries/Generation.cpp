@@ -20,8 +20,8 @@ struct Generation {
      * @param right
      * How many blocks right to draw
      */
-    static std::vector<GameObject> generateWorld(int intial, int left, int right) {
-        std::vector<GameObject> blocks;
+    static std::deque<GameObject> generateWorld(int intial, int left, int right) {
+        std::deque<GameObject> blocks;
 
         for(int i = left; i <= right / BLOCK_SIZE; i++) {
             int num_blocks = Random.RandInt() % BLOCK_VARIATION + MIN_BLOCKS;
