@@ -129,12 +129,12 @@ Vector2 operator *(const Vector2& vec, const double& scalar) {
 Division operations between vectors and scalars
 */
 Vector3 operator /(const Vector3& vec, const double& scalar) {
-    return {vec.x/scalar, vec.y/scalar, vec.z/scalar};
+    return Vector3{vec.x/scalar, vec.y/scalar, vec.z/scalar};
 }
 
 
 Vector2 operator /(const Vector2& vec, const double& scalar) {
-    return {vec.x/scalar, vec.y/scalar};
+    return Vector2{vec.x/scalar, vec.y/scalar};
 }
 
 #endif
