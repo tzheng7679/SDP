@@ -9,6 +9,11 @@ This can also be used to represent a disc (can be both, difference is in how str
 #ifndef Shapes_cpp
 #define Shapes_cpp
 #include "vectors.cpp"
+
+/**
+ * @brief Representation of shapes used throughout program
+ * @author Kevin Z.
+ */
 namespace Shapes {
     struct Circle {
         double x;

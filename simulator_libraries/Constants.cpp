@@ -1,3 +1,5 @@
+// Constants used throughout process
+
 #ifndef Constants_cpp
 #define Constants_cpp
 

@@ -8,6 +8,8 @@
 #include <FEHImages.h>
 #include <vector>
 
+// Container for sprites in game
+// Author: Kevin Z.
 class Sprites {
     public:
         static constexpr char* getSpritePath(int index) {
@@ -17,11 +19,14 @@ class Sprites {
 
 };
 
-// Representation of pause menu button
+/**
+ * @brief Representation of pause menu button 
+ * @author Tony Zheng
+ */
 struct Button {
-    char *text;
-    int x;
-    int y;
+    char *text; // button text
+    int x; // x-coordinate
+    int y; // y-coordinate
 
     int width = BUTTON_WIDTH;
     int height = BUTTON_HEIGHT;
@@ -42,6 +47,7 @@ struct Button {
 };
 
 // Package for drawing any graphical stuff
+// Author: Tony Zheng
 struct Graphics {
     /**
      * Draws the pause menu with associated buttons; executes until the "continue" button is pressed

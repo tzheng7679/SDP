@@ -8,9 +8,11 @@
 
 using namespace Shapes;
 
-/* Utility class for handling collisions
+/** Utility class for handling collisions
 
 Collisions class contains static methods that are useful for handling collisions
+
+Author: Kevin Z.
 */
 class Collisions {
 
@@ -125,7 +127,7 @@ class Collisions {
     }
 
     // checks if c is colliding with something to the right
-    static bool collidingRight(Hittable c, deque<GameObject> proxim) {
+    static bool collidingRight(Hittable c, std::deque<GameObject> proxim) {
         double x = c.getPosition().x;
         for(GameObject g : proxim) {
             Shapes::Rectangle temp(RectangleData {g.getPosition().x, g.getPosition().y, g.getPosition().x + BLOCK_SIZE, g.getPosition().y, g.getPosition().x, g.getPosition().y + BLOCK_SIZE, g.getPosition().x + BLOCK_SIZE, g.getPosition().y + BLOCK_SIZE});
@@ -135,7 +137,7 @@ class Collisions {
     }
 
     // checks if c is colliding with something to the left
-    static bool collidingLeft(Hittable c, deque<GameObject> proxim) {
+    static bool collidingLeft(Hittable c, std::deque<GameObject> proxim) {
         double x = c.getPosition().x;
         for(GameObject g : proxim) {
             Shapes::Rectangle temp(RectangleData {g.getPosition().x, g.getPosition().y, g.getPosition().x + BLOCK_SIZE, g.getPosition().y, g.getPosition().x, g.getPosition().y + BLOCK_SIZE, g.getPosition().x + BLOCK_SIZE, g.getPosition().y + BLOCK_SIZE});

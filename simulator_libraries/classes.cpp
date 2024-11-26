@@ -12,6 +12,8 @@
 
 /*
 GameObject class is what every single object used in the game will have. It will have basic functionality like position
+
+Author: Kevin Z.
 */
 class GameObject {
     private:
@@ -125,6 +127,8 @@ class GameObject {
 /*
 Hittable class is a class that defines a GameObject with collisions by extending GameObject and adding collision stuff
 The rectangle hitbox is represented internally as the LOCAL POSITION of the rectangle relative to the player
+
+Author: Kevin Z.
 */
 class Hittable : public GameObject {
     private:
@@ -187,6 +191,8 @@ class Hittable : public GameObject {
 /*
 Character class is what all NPCs, Enemies, and the player's character will have.
 All character objects will of course have a hitbox and be a gameobject
+
+Author: Kevin Z.
 */
 class Character : public Hittable {
     private:
@@ -211,138 +217,6 @@ class Character : public Hittable {
         void setSprite() {
             
         }
-
-
-};
-
-
-
-class Player : public Character {
-    private:
-    
-    public:
-    Player(Vector3 pos, int spriteIndex, Shapes::Rectangle hitbox) : Character(pos, spriteIndex, hitbox) {
-
-        
-
-    
-    }
-
-    
-    /*
-    Overridden Update method for the player
-
-     */
-    void Update() {
-
-        setPosition(getPosition() + getVelocity());
-        if (getHasGravity() && !isGrounded()) {
-            setVelocity(getVelocity() + Vector3{0, G, 0});
-        }
-    }
-
-
-    //overridden onHit method for the player
-    void onHit(Hittable* otherHit) {
-        setVelocity(VECTOR3_ZERO);
-        printf("The Player's onhit method has executed");
-    }
-
-};
-
-
-class Block : public Hittable {
-
-    private:
-        double health;
-
-        
-    public:
-        Block(double constr_health, Shapes::Rectangle hitbox, Vector3 pos, int spriteIndex) : Hittable(hitbox, pos, spriteIndex) {
-            health = constr_health;
-        }
-
-
-        void Update() {
-            //do nothing
-        }
-
-        double getHealth() {
-            return health;
-        }
-        void setHealth(double newHealth) {
-            health = newHealth;
-            
-        }
-
-        /*
-        return the dropped item, override the getDroppedItem method to change the index of the dropped item
-        the number returned is the ID of the dropped item (or index, if we implement that)
-        */
-        int getDroppedItem() {
-            return -1;
-        }
-
-        
-        
-};
-
-
-
-
-class SandBlock : public Block {
-
-    private:
-
-    public:
-        /*
-        Constructs block with a hitbox of 1
-        */
-        SandBlock(double constr_health, Shapes::Rectangle hitbox, Vector3 pos)  : Block(constr_health, hitbox, pos, 1) {
-
-        }
-        
-
-        /*
-        Get index of SandBlock (which is 1)
-        */
-        int getDroppedItem() {
-            return 1;
-        }
-
-};
-
-
-
-/*
-Item class for player items
-
-TODO: finish defining Item, Weapon and their subclasses
-*/
-
-class Item {
-    private:
-        int id;
-    public:
-
-
-};
-
-
-class Weapon : public Item {
-    private:
-
-    public:
-};
-
-class DragonSword : public Weapon {
-
-
-
-    private:
-
-
-    public:
 
 
 };

@@ -1,8 +1,9 @@
 #ifndef vectors_cpp
 #define vectors_cpp
 
-/*
-Basic struct representing a 3d vector of doubles. x and y represent x and y on screen, z represents the "depth" (for use in drawing)
+/**
+* @brief Basic struct representing a 3d vector of doubles. x and y represent x and y on screen, z represents the "depth" (for use in drawing)
+* @author Kevin.Z
 */
 struct Vector3 {
     double x;
@@ -12,8 +13,9 @@ struct Vector3 {
 
 
 
-/*
-Basic struct representing a 2d vector of doubles, x and y represent the absolute position on the screen
+/**
+* @brief Basic struct representing a 2d vector of doubles, x and y represent the absolute position on the screen
+* @author Kevin Z.
 */
 struct Vector2 {
     double x;

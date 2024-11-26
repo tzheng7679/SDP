@@ -5,6 +5,10 @@
 #include <classes.cpp>
 #include <vector>
 
+/**
+ * @brief Class for generating random world with blocks
+ * @author Tony Zheng
+ */
 struct Generation {
     /**
      * Generates a vector of blocks for x_distance
