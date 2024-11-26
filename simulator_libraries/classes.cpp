@@ -239,7 +239,6 @@ class Player : public Character {
         if (getHasGravity() && !isGrounded()) {
             setVelocity(getVelocity() + Vector3{0, G, 0});
         }
-
     }
 
 

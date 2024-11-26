@@ -113,13 +113,31 @@ class Collisions {
         double ground = SCREEN_HEIGHT;
 
         for(GameObject g: proxim) {
-            Vector3 pos = g.getPosition();
-            double g_x = pos.x - BLOCK_SIZE;
-            if(pos.x - g_x >= 0 && pos.x - g_x <= BLOCK_SIZE)
-                ground = min(pos.y, ground);
+            Vector3 g_pos = g.getPosition();
+            double g_x = g_pos.x - BLOCK_SIZE;
+            if(g_pos.x - g_x >= 0 && g_pos.x - g_x <= BLOCK_SIZE)
+                ground = min(g_pos.y, ground);
         }
 
         return ground;
+    }
+
+    static bool collidingRight(Hittable c, deque<GameObject> proxim) {
+        double x = c.getPosition().x;
+        for(GameObject g : proxim) {
+            Shapes::Rectangle temp(RectangleData {g.getPosition().x, g.getPosition().y, g.getPosition().x + BLOCK_SIZE, g.getPosition().y, g.getPosition().x, g.getPosition().y + BLOCK_SIZE, g.getPosition().x + BLOCK_SIZE, g.getPosition().y + BLOCK_SIZE});
+            if(x <= g.getPosition().x && intersectingRectangles(c.getHitbox(), temp)) return true;
+        }
+        return false;
+    }
+
+    static bool collidingLeft(Hittable c, deque<GameObject> proxim) {
+        double x = c.getPosition().x;
+        for(GameObject g : proxim) {
+            Shapes::Rectangle temp(RectangleData {g.getPosition().x, g.getPosition().y, g.getPosition().x + BLOCK_SIZE, g.getPosition().y, g.getPosition().x, g.getPosition().y + BLOCK_SIZE, g.getPosition().x + BLOCK_SIZE, g.getPosition().y + BLOCK_SIZE});
+            if(x >= g.getPosition().x && intersectingRectangles(c.getHitbox(), temp)) return true;
+        }
+        return false;
     }
 };
 

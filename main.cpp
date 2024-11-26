@@ -63,7 +63,7 @@ int main() {
     c.setPosition({0, 25, 0});
     deque<GameObject> proxim = Save::readGameObjects(O_SAVE_PATH);
     if(proxim.size() == 0) { // if no GameObjects saved, generate random world
-        proxim = Generation::generateWorld(c.getPosition().x, 0, 1);
+        proxim = Generation::generateWorld(c.getPosition().x, -100, 100);
     }
 
     vector<GameObject> left;
@@ -90,13 +90,21 @@ int main() {
         Vector3 vel = c.getVelocity();
         switch(hkey) { // switch horizontal component
             case VK_RIGHT:
-                if(vel.x <= 0) vel.x = VELOCITY_INITIAL;
-                else vel.x = min(vel.x + ACCELERATION, VELOCITY_MAX);
+                if(!Collisions::collidingRight(c, proxim)) {
+                    if(vel.x <= 0) vel.x = VELOCITY_INITIAL;
+                    else vel.x = min(vel.x + ACCELERATION, VELOCITY_MAX);
+                } else {
+                    vel.x = 0;
+                }
                 break;
 
             case VK_LEFT:
-                if(vel.x >= 0) vel.x = -VELOCITY_INITIAL;
-                else vel.x = max(vel.x - ACCELERATION, -VELOCITY_MAX);
+                if(!Collisions::collidingLeft(c, proxim)) {
+                    if(vel.x >= 0) vel.x = -VELOCITY_INITIAL;
+                    else vel.x = max(vel.x - ACCELERATION, -VELOCITY_MAX);
+                } else {
+                    vel.x = 0;
+                }
                 break;
             
             default:
@@ -122,11 +130,18 @@ int main() {
         }
         c.setVelocity(vel);
         c.setGrounded(Collisions::onGround(c, proxim));
-        
         c.Update();
+
+        double y = min(c.getPosition().y, Collisions::getGround(c.getPosition().x + c.getHitbox().getHeight(), proxim));
+        Vector3 pos = c.getPosition();
+        pos.y = y;
+        c.setPosition(pos);
+
         Graphics::drawGameScreen(CAM_POS, proxim, c, pause);
         LCD.SetFontColor(GREEN);
+
         double pos_y = c.getPosition().y;
-        LCD.DrawRectangle(SCREEN_WIDTH / 2, pos_y, c.getHitbox().getWidth(), -c.getHitbox().getHeight());
+        // LCD.DrawRectangle(SCREEN_WIDTH / 2, pos_y, c.getHitbox().getWidth(), c.getHitbox().getHeight());
+        // Sleep(.01);
     }
 }
