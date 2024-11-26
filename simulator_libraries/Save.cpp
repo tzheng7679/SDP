@@ -111,6 +111,7 @@ struct Save{
         return obs;
     };
 
+    // writes hittables to save file
     static void writeHittables(char* path, deque<Hittable> obs) {
         ofstream f(path);
         
@@ -131,7 +132,7 @@ struct Save{
         f.close();
     };
     
-    // writes save file for GameObjects in array #obs, with n elements
+    // read in hittables
     static deque<Hittable> readHittables(char* path) {
         FILE* f = fopen(path, "r");
         deque<Hittable> obs;
@@ -150,6 +151,7 @@ struct Save{
         return obs;
     };
 
+    // shifts obs that are on screen into proxim, ones to the left to the left of the screen to left, and to the right of the screen to right
     static void shiftObs(int newX, vector<GameObject> *left, deque<GameObject> *proxim, vector<GameObject> *right) {
         // push proxim left end into left
         while((*proxim).size() > 0 && 

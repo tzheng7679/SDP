@@ -56,6 +56,7 @@ int verticalKeyDown() {
     return -1;
 }
 int main() {
+    int time = TimeNow();
     int x, y;
 
     Button pause {"||", 0, 0, 25, 20, 0};
@@ -81,7 +82,7 @@ int main() {
             while(LCD.Touch(&x, &y)) { /* wait for touch to release */ }
 
             // if cursor ended on pause button, draw pause menu
-            if(pause.isClicked(x,y)) Graphics::drawPauseMenu();
+            if(pause.isClicked(x,y)) Graphics::drawPauseMenu(time);
         }
 
         int hkey = horizontalKeyDown();
@@ -112,8 +113,8 @@ int main() {
                 break;
         }
         
-        if(c.isGrounded()) {
-            switch(vkey) {
+        if(c.isGrounded()) { // only allow up or down to be inputted if character is on ground
+            switch(vkey) { // switch vertical component
                 case VK_UP:
                     vel.y = -5;
                     break;
@@ -128,20 +129,19 @@ int main() {
         } else {
             vel.y += G;
         }
+
+        // update velocity
         c.setVelocity(vel);
         c.setGrounded(Collisions::onGround(c, proxim));
         c.Update();
 
+        // prevent character phasing through ground
         double y = min(c.getPosition().y, Collisions::getGround(c.getPosition().x + c.getHitbox().getHeight(), proxim));
         Vector3 pos = c.getPosition();
         pos.y = y;
         c.setPosition(pos);
 
+        // update screen
         Graphics::drawGameScreen(CAM_POS, proxim, c, pause);
-        LCD.SetFontColor(GREEN);
-
-        double pos_y = c.getPosition().y;
-        // LCD.DrawRectangle(SCREEN_WIDTH / 2, pos_y, c.getHitbox().getWidth(), c.getHitbox().getHeight());
-        // Sleep(.01);
     }
 }

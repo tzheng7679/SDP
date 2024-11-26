@@ -46,7 +46,7 @@ struct Graphics {
     /**
      * Draws the pause menu with associated buttons; executes until the "continue" button is pressed
      */
-    static void drawPauseMenu() {
+    static void drawPauseMenu(double time) {
         LCD.Clear();
 
         Button cont {"Continue", PADDING, PADDING};
@@ -74,7 +74,9 @@ struct Graphics {
 
                 drawButton(exit);
                 
-                LCD.WriteAt("Placeholder for stats", 0, 100);
+                LCD.WriteAt("Time Played:", 0, 100);
+                LCD.WriteAt(TimeNow() - time, 0, 120);
+                LCD.WriteAt("seconds", 0, 140);
                 
                 do {
                     awaitPress(&x, &y);

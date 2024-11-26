@@ -96,7 +96,8 @@ class Collisions {
         
 
    }
-   
+
+   // returns if character c is on the ground
    static bool onGround(Character c, std::deque<GameObject> proxim) {
         if(c.getHitbox().getBL().y >= SCREEN_HEIGHT) return true;
 
@@ -109,6 +110,7 @@ class Collisions {
         return false;
     }
 
+    // returns the y coordinate of the ground for x-coordinate pos
     static double getGround(int pos, std::deque<GameObject> proxim) {
         double ground = SCREEN_HEIGHT;
 
@@ -122,6 +124,7 @@ class Collisions {
         return ground;
     }
 
+    // checks if c is colliding with something to the right
     static bool collidingRight(Hittable c, deque<GameObject> proxim) {
         double x = c.getPosition().x;
         for(GameObject g : proxim) {
@@ -131,6 +134,7 @@ class Collisions {
         return false;
     }
 
+    // checks if c is colliding with something to the left
     static bool collidingLeft(Hittable c, deque<GameObject> proxim) {
         double x = c.getPosition().x;
         for(GameObject g : proxim) {
