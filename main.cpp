@@ -128,7 +128,5 @@ int main() {
         LCD.SetFontColor(GREEN);
         double pos_y = c.getPosition().y;
         LCD.DrawRectangle(SCREEN_WIDTH / 2, pos_y, c.getHitbox().getWidth(), -c.getHitbox().getHeight());
-        Sleep(0.01);
-        cout << SCREEN_WIDTH / 2 TAB pos_y TAB c.getHitbox().getWidth() TAB -c.getHitbox().getHeight() NEWLINE
     }
 }

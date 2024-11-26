@@ -91,7 +91,7 @@ namespace Shapes {
             Get the height of the rectangle (assuming rectangle is non-rotated)
             */
         double getHeight() {
-                return shape.tl.y - shape.bl.y;
+                return shape.bl.y - shape.tl.y;
         }
     };
 }
