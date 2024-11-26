@@ -2,6 +2,8 @@
 
 #ifndef Save_cpp
 #define Save_cpp
+
+#include "Constants.cpp"
 #include <stdio.h>
 #include <string>
 #include <fstream>
@@ -11,12 +13,6 @@
 #include <iostream>
 using namespace std;
 
-// macro so I don't have to write this every damn time
-#define NEWLINE << "\n";
-#define TAB << "\t" << 
-
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
 
 bool onScreen(int x, int camPos) {
     return x >= camPos && x <= camPos + SCREEN_WIDTH;

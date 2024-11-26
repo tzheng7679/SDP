@@ -1,11 +1,7 @@
 #ifndef Menus_cpp
 #define Menus_cpp
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
-#define BUTTON_WIDTH 150
-#define BUTTON_HEIGHT 50
-#define PADDING 5
+#include "Constants.cpp"
 #include <FEHLCD.h>
 #include <classes.cpp>
 #include <FEHUtility.h>

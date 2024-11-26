@@ -1,17 +1,11 @@
+#ifndef classes_cpp
+#define classes_cpp
+
 #include <math.h>
 #include "vectors.cpp"
 #include <stdio.h>
 #include <deque>
-#ifndef classes_cpp
-#define classes_cpp
-
-#define SCREEN_HEIGHT 320
-#define BLOCK_SIZE 10
-/*
-Basic Constants
-*/
-const double GRAVITY_ACCELERATION = 3;
-
+#include "Constants.cpp"
 
 /* Basic structs to store the data in */
 

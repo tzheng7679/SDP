@@ -1,13 +1,6 @@
 #ifndef Generation_cpp
 #define Generation_cpp
 
-#define BLOCK_SIZE 10
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
-#define MIN_BLOCKS 5
-#define BLOCK_VARIATION 5
-#define BLOCK_INDEX 1
-
 #include <FEHRandom.h>
 #include <classes.cpp>
 #include <vector>
@@ -27,7 +20,7 @@ struct Generation {
             int num_blocks = Random.RandInt() % BLOCK_VARIATION + MIN_BLOCKS;
 
             for(int b = 0; b < num_blocks; b++) {
-                GameObject g (Vector3({(i - intial) * BLOCK_SIZE, SCREEN_HEIGHT - b * BLOCK_SIZE, 0}), BLOCK_INDEX);
+                GameObject g (Vector3({(i - intial) * BLOCK_SIZE, SCREEN_HEIGHT - b * BLOCK_SIZE, 0}), BLOCK_IMAGE_INDEX);
                 blocks.push_back(g);
             }
         }
