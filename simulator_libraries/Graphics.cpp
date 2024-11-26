@@ -91,7 +91,7 @@ struct Graphics {
                 
                 drawButton(exit);
                 
-                char* lines[] = {"Touch screen in", "direction to move there", "Touch above character", "to jump"};
+                char* lines[] = {"Press W or up-arrow ", "to jump", "A/Left arrow to ", "move left", "D/Right arrow to ", "move right"};
                 int spacer = 0;
                 for(char* l : lines) {
                     LCD.WriteAt(l, PADDING, PADDING + BUTTON_HEIGHT + PADDING + spacer);
