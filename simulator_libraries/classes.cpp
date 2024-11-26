@@ -59,8 +59,6 @@ class GameObject {
         void Update() {
             //update position based on the velocity
             this -> position = this -> position + velocity;
-
-            
         }
 
         Vector3 getPosition() {
@@ -130,13 +128,13 @@ The rectangle hitbox is represented internally as the LOCAL POSITION of the rect
 */
 class Hittable : public GameObject {
     private:
-        Rectangle hitbox;
+        Shapes::Rectangle hitbox;
 
         //whether or not the colliding object is standing on the ground
         bool grounded;
 
     public:
-        Hittable(Rectangle hbox) : GameObject({0, 0, 0}, -1) {
+        Hittable(Shapes::Rectangle hbox) : GameObject({0, 0, 0}, -1) {
             hitbox = hbox;
 
             grounded = false;
@@ -146,7 +144,7 @@ class Hittable : public GameObject {
             this->setGravity(false);
         }
 
-        Hittable(Rectangle hbox, Vector3 pos, int spriteIndex) : GameObject(pos, spriteIndex) {
+        Hittable(Shapes::Rectangle hbox, Vector3 pos, int spriteIndex) : GameObject(pos, spriteIndex) {
             this -> hitbox = hbox;
 
             this -> grounded = false;
@@ -157,12 +155,12 @@ class Hittable : public GameObject {
         }
 
         //returns hitbox as a rectangle of global coordinates
-        Rectangle getHitbox() {
+        Shapes::Rectangle getHitbox() {
             return hitbox.returnAdd({getPosition().x, getPosition().y});
         }
 
         //gets local coordinates of the hitbox
-        Rectangle getHitboxLocal() {return hitbox;}
+        Shapes::Rectangle getHitboxLocal() {return hitbox;}
 
 
 
@@ -200,7 +198,7 @@ class Character : public Hittable {
     
 
     public:
-        Character(Vector3 pos, int spriteIndex, Rectangle hitbox) : Hittable(hitbox, pos, spriteIndex){
+        Character(Vector3 pos, int spriteIndex, Shapes::Rectangle hitbox) : Hittable(hitbox, pos, spriteIndex){
             
         }
         double getHealth() {
@@ -223,7 +221,7 @@ class Player : public Character {
     private:
     
     public:
-    Player(Vector3 pos, int spriteIndex, Rectangle hitbox) : Character(pos, spriteIndex, hitbox) {
+    Player(Vector3 pos, int spriteIndex, Shapes::Rectangle hitbox) : Character(pos, spriteIndex, hitbox) {
 
         
 
@@ -239,7 +237,7 @@ class Player : public Character {
 
         setPosition(getPosition() + getVelocity());
         if (getHasGravity() && !isGrounded()) {
-            setVelocity(getVelocity() + Vector3{0, GRAVITY_ACCELERATION, 0});
+            setVelocity(getVelocity() + Vector3{0, G, 0});
         }
 
     }
@@ -261,7 +259,7 @@ class Block : public Hittable {
 
         
     public:
-        Block(double constr_health, Rectangle hitbox, Vector3 pos, int spriteIndex) : Hittable(hitbox, pos, spriteIndex) {
+        Block(double constr_health, Shapes::Rectangle hitbox, Vector3 pos, int spriteIndex) : Hittable(hitbox, pos, spriteIndex) {
             health = constr_health;
         }
 
@@ -301,7 +299,7 @@ class SandBlock : public Block {
         /*
         Constructs block with a hitbox of 1
         */
-        SandBlock(double constr_health, Rectangle hitbox, Vector3 pos)  : Block(constr_health, hitbox, pos, 1) {
+        SandBlock(double constr_health, Shapes::Rectangle hitbox, Vector3 pos)  : Block(constr_health, hitbox, pos, 1) {
 
         }
         

@@ -1,3 +1,6 @@
+#ifndef Constants_cpp
+#define Constants_cpp
+
 // Proteus constants
 #define SCREEN_HEIGHT 240
 #define SCREEN_WIDTH 320
@@ -17,6 +20,7 @@
 // macros so I don't have to write this every damn time
 #define NEWLINE << "\n";
 #define TAB << "\t" << 
+#define TABEND << "\t";
 
 // Image indices
 #define CHARACTER_IMAGE_INDEX 0
@@ -33,4 +37,4 @@
 #define G 0.5
 #define DELTA_T .00
 
-const double GRAVITY_ACCELERATION = 3;
+#endif

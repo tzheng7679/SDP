@@ -6,6 +6,8 @@
 #include "Shapes.cpp"
 #include "classes.cpp"
 
+using namespace Shapes;
+
 /* Utility class for handling collisions
 
 Collisions class contains static methods that are useful for handling collisions
@@ -42,7 +44,7 @@ class Collisions {
     @todo change return type to give more detail about nature of intersection
     @todo possibly make it work for rotated rectangles
     */
-    static bool intersectingRectangles(Rectangle rect1, Rectangle rect2) {
+    static bool intersectingRectangles(Shapes::Rectangle rect1, Shapes::Rectangle rect2) {
         //totally original code
         Vector2 Pos1 = rect1.getTL();
         Vector2 Pos2 = rect2.getTL();
@@ -64,12 +66,12 @@ class Collisions {
     @pre the character and collidingBlock are already intersecting
 
     */
-   static void pushCharacter(Character* character, Rectangle collidingBlock) {
+   static void pushCharacter(Character* character, Shapes::Rectangle collidingBlock) {
     
         /*
         Push the character out by reversing the velocity until the character doesn't collide with the hitbo anymore
         */
-        Rectangle hitbox = character -> getHitbox();
+        Shapes::Rectangle hitbox = character -> getHitbox();
 
         //local position of character hitbox relative to hitbox
         Vector2 localPos = collidingBlock.getTL() - hitbox.getTL();
@@ -100,11 +102,25 @@ class Collisions {
 
         for(GameObject g : proxim) {
             Vector3 pos = g.getPosition();
-            if(c.getPosition().x - pos.x >= 0 && c.getPosition().x - pos.x <= BLOCK_SIZE && c.getHitbox().getBL().y >= g.getPosition().y - 1) return true;
+            double g_x = pos.x - BLOCK_SIZE;
+            double c_x = c.getPosition().x;
+            if(c_x - g_x >= 0 && c_x - g_x <= BLOCK_SIZE && c.getHitbox().getBL().y >= g.getPosition().y) return true;
         }
         return false;
     }
 
+    static double getGround(int pos, std::deque<GameObject> proxim) {
+        double ground = SCREEN_HEIGHT;
+
+        for(GameObject g: proxim) {
+            Vector3 pos = g.getPosition();
+            double g_x = pos.x - BLOCK_SIZE;
+            if(pos.x - g_x >= 0 && pos.x - g_x <= BLOCK_SIZE)
+                ground = min(pos.y, ground);
+        }
+
+        return ground;
+    }
 };
 
 #endif

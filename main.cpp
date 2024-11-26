@@ -2,17 +2,35 @@
 #include "FEHUtility.h"
 
 #include "Constants.cpp"
-#include "Collisions.cpp"
 #include "classes.cpp"
 #include "Save.cpp"
 #include "Shapes.cpp"
-#include "Generation.cpp"
 #include "Graphics.cpp"
+#include "Collisions.cpp"
+#include "Generation.cpp"
 
 #include <vector>
 #include <deque>
 #include <iostream>
 #include <winuser.h>
+
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
+
+// save file for character
+#define C_SAVE_PATH "saves/c.txt"
+
+// save file for GameObjects
+#define O_SAVE_PATH "saves/obs.txt"
+
+// set physical constants
+#define VELOCITY_INITIAL 1
+#define VELOCITY_MAX 3.0
+#define ACCELERATION 1
+#define G 0.5
+#define DELTA_T .00
+
+#define CAM_POS c.getPosition().x - SCREEN_WIDTH / 2
 
 enum Direction {
     LEFT,
@@ -45,7 +63,7 @@ int main() {
     c.setPosition({0, 25, 0});
     deque<GameObject> proxim = Save::readGameObjects(O_SAVE_PATH);
     if(proxim.size() == 0) { // if no GameObjects saved, generate random world
-        proxim = Generation::generateWorld(c.getPosition().x, 0, 1000);
+        proxim = Generation::generateWorld(c.getPosition().x, 0, 1);
     }
 
     vector<GameObject> left;
@@ -100,16 +118,17 @@ int main() {
                     break;
             }
         } else {
-            cout << "ssdsd";
             vel.y += G;
         }
-
-
         c.setVelocity(vel);
         c.setGrounded(Collisions::onGround(c, proxim));
-
+        
         c.Update();
-
         Graphics::drawGameScreen(CAM_POS, proxim, c, pause);
+        LCD.SetFontColor(GREEN);
+        double pos_y = c.getPosition().y;
+        LCD.DrawRectangle(SCREEN_WIDTH / 2, pos_y, c.getHitbox().getWidth(), -c.getHitbox().getHeight());
+        Sleep(0.01);
+        cout << SCREEN_WIDTH / 2 TAB pos_y TAB c.getHitbox().getWidth() TAB -c.getHitbox().getHeight() NEWLINE
     }
 }

@@ -16,11 +16,14 @@ struct Generation {
     static std::deque<GameObject> generateWorld(int intial, int left, int right) {
         std::deque<GameObject> blocks;
 
-        for(int i = left; i <= right / BLOCK_SIZE; i++) {
+        for(int i = left; i <= right; i++) {
             int num_blocks = Random.RandInt() % BLOCK_VARIATION + MIN_BLOCKS;
 
             for(int b = 0; b < num_blocks; b++) {
-                GameObject g (Vector3({(i - intial) * BLOCK_SIZE, SCREEN_HEIGHT - b * BLOCK_SIZE, 0}), BLOCK_IMAGE_INDEX);
+                GameObject g (
+                    Vector3({(i - intial) * BLOCK_SIZE, SCREEN_HEIGHT - (b+1) * BLOCK_SIZE, 0}), 
+                    BLOCK_IMAGE_INDEX
+                );
                 blocks.push_back(g);
             }
         }
