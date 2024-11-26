@@ -1,31 +1,18 @@
 #include "FEHLCD.h"
 #include "FEHUtility.h"
+
+#include "Constants.cpp"
+#include "Collisions.cpp"
 #include "classes.cpp"
 #include "Save.cpp"
+#include "Shapes.cpp"
+#include "Generation.cpp"
+#include "Graphics.cpp"
+
 #include <vector>
 #include <deque>
 #include <iostream>
-#include <Graphics.cpp>
-#include <Generation.cpp>
 #include <winuser.h>
-
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
-
-// save file for character
-#define C_SAVE_PATH "saves/c.txt"
-
-// save file for GameObjects
-#define O_SAVE_PATH "saves/obs.txt"
-
-// set physical constants
-#define VELOCITY_INITIAL 1
-#define VELOCITY_MAX 3.0
-#define ACCELERATION 1
-#define G 0.5
-#define DELTA_T .00
-
-#define CAM_POS c.getPosition().x - SCREEN_WIDTH / 2
 
 enum Direction {
     LEFT,
@@ -64,8 +51,6 @@ int main() {
     vector<GameObject> left;
     vector<GameObject> right;
     Save::shiftObs(CAM_POS, &left, &proxim, &right); // shift gameobjects into appropriate vectors
-
-    cout << "blah";
 
     int xtemp, ytemp;
     while(true) {

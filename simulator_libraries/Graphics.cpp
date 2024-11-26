@@ -8,6 +8,15 @@
 #include <FEHImages.h>
 #include <vector>
 
+class Sprites {
+    public:
+        static constexpr char* getSpritePath(int index) {
+            char* spritesList[] = {"sprites/player.png", "sprites/block.png"};
+            return spritesList[index];
+        }
+
+};
+
 // Representation of pause menu button
 struct Button {
     char *text;

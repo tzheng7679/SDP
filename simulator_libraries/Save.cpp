@@ -44,9 +44,13 @@ struct Save{
     static Character readCharacterData(char* path) {
         FILE* save = fopen(path, "r");
 
+        // peek at first character in file
         std::ifstream peeker(path);
-        if(peeker.peek() == EOF) return Character(Vector3(), 0, Rectangle(RectangleData {0, 0, 0, 20, 5, 0, 5, 20})); // if no character detected, return default character
+        if(peeker.peek() == EOF) 
+            return Character(Vector3(), CHARACTER_IMAGE_INDEX, Rectangle(RectangleData {0, 0, 0, 20, 5, 0, 5, 20})); // if no character detected, return default character
+        peeker.close();
 
+        // read in character attributes
         float health, TLx, TLy, BRx, BRy, px, py, pz;
         int spriteIndex;
 
